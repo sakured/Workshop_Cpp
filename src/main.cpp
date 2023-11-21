@@ -1,8 +1,13 @@
+#define _USE_MATH_DEFINES
 #include <sil/sil.hpp>
 #include "random.hpp"
+#include <math.h>
+#include <cmath>
+
 
 int main()
 {
+    float pi {M_PI};
     // Choix de l'image à modifier
     sil::Image image{"images/logo.png"};
 
@@ -145,32 +150,89 @@ int main()
     // photo_bis.save("output/exo10_bis.jpg");
 
     // Exercice 11
-    sil::Image disque{500/*width*/, 500/*height*/};
-    for (int x{0}; x < disque.height(); x++)
-    {
-        for (int y{0}; y < disque.width(); y++)
-        {
-            if (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) {
-                disque.pixel(y, x).r = 1.0f;
-                disque.pixel(y, x).g = 1.0f;
-                disque.pixel(y, x).b = 1.0f;
-            }
-        }
-    }
-    disque.save("output/exo11.png");
+    // sil::Image disque{500/*width*/, 500/*height*/};
+    // for (int x{0}; x < disque.height(); x++)
+    // {
+    //     for (int y{0}; y < disque.width(); y++)
+    //     {
+    //         if (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) {
+    //             disque.pixel(y, x).r = 1.0f;
+    //             disque.pixel(y, x).g = 1.0f;
+    //             disque.pixel(y, x).b = 1.0f;
+    //         }
+    //     }
+    // }
+    // disque.save("output/exo11.png");
 
     // Exercice 12
-    sil::Image cercle{500/*width*/, 500/*height*/};
-    for (int x{0}; x < cercle.height(); x++)
+    // sil::Image cercle{500/*width*/, 500/*height*/};
+    // for (int x{0}; x < cercle.height(); x++)
+    // {
+    //     for (int y{0}; y < cercle.width(); y++)
+    //     {
+    //         if ((pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) && (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) > 90)) {
+    //             cercle.pixel(y, x).r = 1.0f;
+    //             cercle.pixel(y, x).g = 1.0f;
+    //             cercle.pixel(y, x).b = 1.0f;
+    //         }
+    //     }
+    // }
+    // cercle.save("output/exo12.png");
+
+
+    //Exercice 13 :
+
+    sil::Image rosace{500/*width*/, 500/*height*/};
+    for (int x{0}; x < rosace.height(); x++) //premiere boucle for pour cercle du centre
     {
-        for (int y{0}; y < cercle.width(); y++)
+        for (int y{0}; y < rosace.width(); y++)
         {
-            if ((pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) && (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) > 90)) {
-                cercle.pixel(y, x).r = 1.0f;
-                cercle.pixel(y, x).g = 1.0f;
-                cercle.pixel(y, x).b = 1.0f;
+            if ((pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) && (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) > 95)) {
+                rosace.pixel(y, x).r = 1.0f;
+                rosace.pixel(y, x).g = 1.0f;
+                rosace.pixel(y, x).b = 1.0f;
+            }
+        }
+    } 
+    for (int i {}; i<6 ; ++i) // deuxieme boucle pour les autres cercles 
+    {
+        int x_centre = cos(i*pi/3)*100+255 ;
+        int y_centre = sin(i*pi/3)*100+255 ;
+        for (int x{0}; x < rosace.height(); x++)
+        {
+            for (int y{0}; y < rosace.width(); y++)
+            {
+                if ((pow (pow(x-x_centre, 2.0f) + pow(y-y_centre, 2.0f), 0.5f) < 100) && (pow (pow(x-x_centre, 2.0f) + pow(y-y_centre, 2.0f), 0.5f) > 95)) {
+                    rosace.pixel(y, x).r = 1.0f;
+                    rosace.pixel(y, x).g = 1.0f;
+                    rosace.pixel(y, x).b = 1.0f;
+                }
             }
         }
     }
-    cercle.save("output/exo12.png");
+        rosace.save("output/exo13.png");
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
