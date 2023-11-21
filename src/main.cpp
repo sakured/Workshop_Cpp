@@ -231,39 +231,63 @@ int main()
     // new_image.save("output/exo14.png");
 
     // Exercice 15
-    sil::Image new_image{345*6/*width*/, 300*6/*height*/};
-    int x_direction {};
-    int y_direction {};
-    for (int i=0; i<5; i++) 
-    {
-        for (int j=0; j<5; j++) 
-        {
-            for (int x{0}; x < image.width(); x++)
-            {
-                for (int y{0}; y < image.height(); y++)
-                {
-                    // Choix d'une symétrie verticale ou non
-                    if (i%2 == 1) {
-                        x_direction = image.width()-x-1;
-                    } else {
-                        x_direction = x;
-                    }
-                    // Choix d'une symétrie horizontale ou non
-                    if (j%2 == 1) {
-                        y_direction = image.height()-y-1;
-                    } else {
-                        y_direction = y;
-                    }
+    // sil::Image new_image{345*6/*width*/, 300*6/*height*/};
+    // int x_direction {};
+    // int y_direction {};
+    // for (int i=0; i<5; i++) 
+    // {
+    //     for (int j=0; j<5; j++) 
+    //     {
+    //         for (int x{0}; x < image.width(); x++)
+    //         {
+    //             for (int y{0}; y < image.height(); y++)
+    //             {
+    //                 // Choix d'une symétrie verticale ou non
+    //                 if (i%2 == 1) {
+    //                     x_direction = image.width()-x-1;
+    //                 } else {
+    //                     x_direction = x;
+    //                 }
+    //                 // Choix d'une symétrie horizontale ou non
+    //                 if (j%2 == 1) {
+    //                     y_direction = image.height()-y-1;
+    //                 } else {
+    //                     y_direction = y;
+    //                 }
 
-                    // Affichage de l'image
-                    new_image.pixel(i*300+x, j*345+y).r = image.pixel(x_direction, y_direction).r;
-                    new_image.pixel(i*300+x, j*345+y).g = image.pixel(x_direction, y_direction).g;
-                    new_image.pixel(i*300+x, j*345+y).b = image.pixel(x_direction, y_direction).b;
+    //                 // Affichage de l'image
+    //                 new_image.pixel(i*300+x, j*345+y).r = image.pixel(x_direction, y_direction).r;
+    //                 new_image.pixel(i*300+x, j*345+y).g = image.pixel(x_direction, y_direction).g;
+    //                 new_image.pixel(i*300+x, j*345+y).b = image.pixel(x_direction, y_direction).b;
+    //             }
+    //         }
+    //     }
+    // }
+    // new_image.save("output/exo15.png");
+
+
+
+    //Exercice 16 
+    for (glm::vec3 & color : image.pixels())
+    {
+        int rand {random_int(0, 1000)};// 1 chance sur 1000 de faire un glitch
+        int rand_x1 {random_int(1, 60)};// largeur aléatoire 
+        int rand_y1 {random_int(1, 10)};// hauteur aléatoire
+        int rand_x2 {random_int(rand_x1,300)};// position x du pixel avec lequel on a interverti
+        int rand_y2 {random_int(rand_y1,345)};// position y du pixel avec lequel on a interverti
+        if (rand == 1)
+        {
+            for (int x{0}; x < rand_x1; x++)
+            {
+                for (int y{0}; y < rand_y1; y++)
+                {
+                    std::swap(image.pixel(x, y).r, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).r);// modulo pour eviter de sortir de l'image
+                    std::swap(image.pixel(x, y).g, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).g);
+                    std::swap(image.pixel(x, y).b, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).b);
                 }
             }
         }
     }
-    new_image.save("output/exo15.png");
+    image.save("output/exo16.png");
 
-    return 0;
 }
