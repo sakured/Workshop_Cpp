@@ -181,58 +181,54 @@ int main()
 
 
     //Exercice 13 :
+    // sil::Image rosace{500/*width*/, 500/*height*/};
+    // for (int x{0}; x < rosace.height(); x++) //premiere boucle for pour cercle du centre
+    // {
+    //     for (int y{0}; y < rosace.width(); y++)
+    //     {
+    //         if ((pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) && (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) > 95)) {
+    //             rosace.pixel(y, x).r = 1.0f;
+    //             rosace.pixel(y, x).g = 1.0f;
+    //             rosace.pixel(y, x).b = 1.0f;
+    //         }
+    //     }
+    // } 
+    // for (int i {}; i<6 ; ++i) // deuxieme boucle pour les autres cercles 
+    // {
+    //     int x_centre = cos(i*pi/3)*100+255 ;
+    //     int y_centre = sin(i*pi/3)*100+255 ;
+    //     for (int x{0}; x < rosace.height(); x++)
+    //     {
+    //         for (int y{0}; y < rosace.width(); y++)
+    //         {
+    //             if ((pow (pow(x-x_centre, 2.0f) + pow(y-y_centre, 2.0f), 0.5f) < 100) && (pow (pow(x-x_centre, 2.0f) + pow(y-y_centre, 2.0f), 0.5f) > 95)) {
+    //                 rosace.pixel(y, x).r = 1.0f;
+    //                 rosace.pixel(y, x).g = 1.0f;
+    //                 rosace.pixel(y, x).b = 1.0f;
+    //             }
+    //         }
+    //     }
+    // }
+    // rosace.save("output/exo13.png");
 
-    sil::Image rosace{500/*width*/, 500/*height*/};
-    for (int x{0}; x < rosace.height(); x++) //premiere boucle for pour cercle du centre
+    // Exercice 14
+    sil::Image new_image{345*6/*width*/, 300*6/*height*/};
+    for (int i=0; i<5; i++) 
     {
-        for (int y{0}; y < rosace.width(); y++)
+        for (int j=0; j<5; j++) 
         {
-            if ((pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) && (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) > 95)) {
-                rosace.pixel(y, x).r = 1.0f;
-                rosace.pixel(y, x).g = 1.0f;
-                rosace.pixel(y, x).b = 1.0f;
-            }
-        }
-    } 
-    for (int i {}; i<6 ; ++i) // deuxieme boucle pour les autres cercles 
-    {
-        int x_centre = cos(i*pi/3)*100+255 ;
-        int y_centre = sin(i*pi/3)*100+255 ;
-        for (int x{0}; x < rosace.height(); x++)
-        {
-            for (int y{0}; y < rosace.width(); y++)
+            for (int x{0}; x < image.width(); x++)
             {
-                if ((pow (pow(x-x_centre, 2.0f) + pow(y-y_centre, 2.0f), 0.5f) < 100) && (pow (pow(x-x_centre, 2.0f) + pow(y-y_centre, 2.0f), 0.5f) > 95)) {
-                    rosace.pixel(y, x).r = 1.0f;
-                    rosace.pixel(y, x).g = 1.0f;
-                    rosace.pixel(y, x).b = 1.0f;
+                for (int y{0}; y < image.height(); y++)
+                {
+                    new_image.pixel(i*300+x, j*345+y).r = image.pixel(x, y).r;
+                    new_image.pixel(i*300+x, j*345+y).g = image.pixel(x, y).g;
+                    new_image.pixel(i*300+x, j*345+y).b = image.pixel(x, y).b;
                 }
             }
         }
     }
-        rosace.save("output/exo13.png");
-    
+    new_image.save("output/exo14.png");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return 0;
 }
