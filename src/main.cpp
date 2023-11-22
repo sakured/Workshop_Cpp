@@ -1,9 +1,13 @@
 #define _USE_MATH_DEFINES
 #include <sil/sil.hpp>
+#include <iostream>
 #include "random.hpp"
 #include <math.h>
 #include <cmath>
+#include <complex>
+#include <glm/gtx/matrix_transform_2d.hpp>
 
+ glm::vec2 rotated(glm::vec2 v, float angle);
 
 int main()
 {
@@ -11,7 +15,7 @@ int main()
     // Choix de l'image à modifier
     sil::Image image{"images/logo.png"};
 
-    // Exercice 1
+    // // Exercice 1
     // for (glm::vec3 & color : image.pixels())
     // {
     //     color.r = 0.f;
@@ -19,7 +23,7 @@ int main()
     // }
     // image.save("output/exo01.png");
 
-    // Exercice 2
+    // // Exercice 2
     // for (glm::vec3 & color : image.pixels())
     // {
     //     float stock {};
@@ -29,7 +33,7 @@ int main()
     // }
     // image.save("output/exo02.png");
 
-    // Exercice 3
+    // // Exercice 3
     // for (glm::vec3 & color : image.pixels())
     // {
     // float gris = (color.g + color.b + color.r) / 3;
@@ -39,7 +43,7 @@ int main()
     // }
     // image.save("output/exo03.png");
 
-    // Exercice 4
+    // // Exercice 4
     // for (glm::vec3 & color : image.pixels())
     // {
     //     color.r = 1 - color.r;
@@ -48,7 +52,7 @@ int main()
     // }
     // image.save("output/exo04.png");
 
-    // Exercice 5
+    // // Exercice 5
     // sil::Image degrade{300/*width*/, 200/*height*/};
     // float lumiere {0.0f};
     // for (int x{0}; x < degrade.height(); x++)
@@ -64,7 +68,7 @@ int main()
     // }
     // degrade.save("output/exo05.png");
 
-    // Exercice 6
+    // // Exercice 6
     // float stock_r {};
     // float stock_g {};
     // float stock_b {};
@@ -87,7 +91,7 @@ int main()
     // }
     // image.save("output/exo06.png");
 
-    // Exercice 7
+    // // Exercice 7
     // for (glm::vec3 & color : image.pixels())
     // {
     //     int rand {random_int(0, 4)};
@@ -99,7 +103,7 @@ int main()
     // }
     // image.save("output/exo07.png");
 
-    // Exercice 8
+    // // Exercice 8
     // sil::Image new_image{345/*width*/, 300/*height*/};
     // for (int x{0}; x < image.width(); x++)
     // {
@@ -112,7 +116,7 @@ int main()
     // }
     // new_image.save("output/exo08.png");
 
-    // Exercice 9
+    // // Exercice 9
     // sil::Image new_image{300/*width*/, 345/*height*/};
     // for (int x{0}; x < image.width(); x++)
     // {
@@ -129,7 +133,7 @@ int main()
     // }
     // new_image.save("output/exo09.png");
 
-    // Exercice 10
+    // // Exercice 10
     // sil::Image photo{"images/photo.jpg"};
     // for (glm::vec3 & color : photo.pixels())
     // {
@@ -149,7 +153,7 @@ int main()
     // }
     // photo_bis.save("output/exo10_bis.jpg");
 
-    // Exercice 11
+    // // Exercice 11
     // sil::Image disque{500/*width*/, 500/*height*/};
     // for (int x{0}; x < disque.height(); x++)
     // {
@@ -164,7 +168,7 @@ int main()
     // }
     // disque.save("output/exo11.png");
 
-    // Exercice 12
+    // // Exercice 12
     // sil::Image cercle{500/*width*/, 500/*height*/};
     // for (int x{0}; x < cercle.height(); x++)
     // {
@@ -180,7 +184,7 @@ int main()
     // cercle.save("output/exo12.png");
 
 
-    //Exercice 13 :
+    //// Exercice 13 :
     // sil::Image rosace{500/*width*/, 500/*height*/};
     // for (int x{0}; x < rosace.height(); x++) //premiere boucle for pour cercle du centre
     // {
@@ -211,7 +215,7 @@ int main()
     // }
     // rosace.save("output/exo13.png");
 
-    // Exercice 14
+    // // Exercice 14
     // sil::Image new_image{345*6/*width*/, 300*6/*height*/};
     // for (int i=0; i<5; i++) 
     // {
@@ -230,7 +234,7 @@ int main()
     // }
     // new_image.save("output/exo14.png");
 
-    // Exercice 15
+    // // Exercice 15
     // sil::Image new_image{345*6/*width*/, 300*6/*height*/};
     // int x_direction {};
     // int y_direction {};
@@ -265,29 +269,56 @@ int main()
     // }
     // new_image.save("output/exo15.png");
 
+    // // Exercice 16 
+    // for (glm::vec3 & color : image.pixels())
+    // {
+    //     int rand {random_int(0, 1000)};// 1 chance sur 1000 de faire un glitch
+    //     int rand_x1 {random_int(1, 60)};// largeur aléatoire 
+    //     int rand_y1 {random_int(1, 10)};// hauteur aléatoire
+    //     int rand_x2 {random_int(rand_x1,300)};// position x du pixel avec lequel on a interverti
+    //     int rand_y2 {random_int(rand_y1,345)};// position y du pixel avec lequel on a interverti
+    //     if (rand == 1)
+    //     {
+    //         for (int x{0}; x < rand_x1; x++)
+    //         {
+    //             for (int y{0}; y < rand_y1; y++)
+    //             {
+    //                 std::swap(image.pixel(x, y).r, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).r);// modulo pour eviter de sortir de l'image
+    //                 std::swap(image.pixel(x, y).g, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).g);
+    //                 std::swap(image.pixel(x, y).b, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).b);
+    //             }
+    //         }
+    //     }
+    // }
+    // image.save("output/exo16.png");
 
-
-    //Exercice 16 
-    for (glm::vec3 & color : image.pixels())
+    // Exercice 17
+    sil::Image fractale{500/*width*/, 500/*height*/};
+    int compteur {};
+    for (float x{-2.5f}; x < 2.5f; x+=0.01f)
     {
-        int rand {random_int(0, 1000)};// 1 chance sur 1000 de faire un glitch
-        int rand_x1 {random_int(1, 60)};// largeur aléatoire 
-        int rand_y1 {random_int(1, 10)};// hauteur aléatoire
-        int rand_x2 {random_int(rand_x1,300)};// position x du pixel avec lequel on a interverti
-        int rand_y2 {random_int(rand_y1,345)};// position y du pixel avec lequel on a interverti
-        if (rand == 1)
+        for (float y{-2.5f}; y < 2.5f; y+=0.01f)
         {
-            for (int x{0}; x < rand_x1; x++)
-            {
-                for (int y{0}; y < rand_y1; y++)
-                {
-                    std::swap(image.pixel(x, y).r, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).r);// modulo pour eviter de sortir de l'image
-                    std::swap(image.pixel(x, y).g, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).g);
-                    std::swap(image.pixel(x, y).b, image.pixel((x+rand_x2)%image.width(), (y+rand_y2)%image.height()).b);
+            std::complex<float> c {x,y};
+            std::complex<float> z {0.0f, 0.0f};
+            // Calcul du nombre d'itérations nécésaires à ce que abs(z) dépasse 2
+            for (int i{0}; i<50; i++) {
+                z = (z * z) + c;
+                if (std::abs(z) >= 2.f) {
+                    compteur = i;
+                    break;
                 }
             }
+            // Cas où abs(z) est toujours inférieur à 2
+            if (std::abs(z) < 2.f) {
+                compteur = 50;
+            } 
+            // Coloriage des pixel 
+            fractale.pixel(x*100+250,y*100+250).r = 0.0f + static_cast<float>(compteur)/50.0f;
+            fractale.pixel(x*100+250,y*100+250).g = 0.0f + static_cast<float>(compteur)/50.0f;
+            fractale.pixel(x*100+250,y*100+250).b = 0.0f + static_cast<float>(compteur)/50.0f;
         }
     }
-    image.save("output/exo16.png");
+    fractale.save("output/exo17.png");
 
 }
