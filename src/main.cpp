@@ -346,6 +346,22 @@ int main()
 //     } 
 //     vortex.save("output/exo18.png"); 
 
+    // Exercice 19
+    sil::Image photo{"images/photo.jpg"};
+    for (int x{0}; x < photo.width(); x++)
+    {
+        for (int y{0}; y < photo.height(); y++)
+        {   
+            float proba_blanc = (photo.pixel(x,y).r + photo.pixel(x,y).g + photo.pixel(x,y).b) / 3.f;
+            if (random_float(0.f, 1.f) < proba_blanc) {
+                photo.pixel(x, y) = glm::vec3{1};
+            } else {
+                photo.pixel(x, y) = glm::vec3{0};
+            }
+        }
+    } 
+    photo.save("output/exo19.jpg"); 
+
     // Exercice 20
     sil::Image low_image{"images/photo_faible_contraste.jpg"};
     float min {1.f}; // Plus petite luminosité
