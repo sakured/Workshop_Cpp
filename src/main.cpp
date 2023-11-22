@@ -1,4 +1,5 @@
 #define _USE_MATH_DEFINES
+#include <glm/gtx/matrix_transform_2d.hpp>
 #include <sil/sil.hpp>
 #include <iostream>
 #include "random.hpp"
@@ -7,11 +8,15 @@
 #include <complex>
 #include <glm/gtx/matrix_transform_2d.hpp>
 
- glm::vec2 rotated(glm::vec2 v, float angle);
+glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
+{
+    return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
+} 
 
 int main()
-{
+ {
     float pi {M_PI};
+
     // Choix de l'image à modifier
     sil::Image image{"images/logo.png"};
 
@@ -296,6 +301,7 @@ int main()
     sil::Image fractale{500/*width*/, 500/*height*/};
     int compteur {};
     for (float x{-2.5f}; x < 2.5f; x+=0.01f)
+    //     int rand {random_int(0, 1000)};// 1 chance sur 1000 de faire un glitch
     {
         for (float y{-2.5f}; y < 2.5f; y+=0.01f)
         {
@@ -321,4 +327,27 @@ int main()
     }
     fractale.save("output/exo17.png");
 
-}
+   // Exercice 18:
+    sil::Image vortex{300/*width*/, 345/*height*/};
+    for (int x{ }; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {
+            glm::vec2 point{x, y};
+            glm::vec2 center_of_rotation{image.width()/2, image.height()/2};
+
+            glm::vec2 new_point{ rotated(point ,center_of_rotation ,pow((pow((x-image.width()/2),2)+pow((y-image.height()/2),2)),0.5)/10) };
+
+            if(new_point.y<vortex.height() && new_point.x<vortex.width() && new_point.y>0 && new_point.x>0) // TODO vérifier que on est bien dans l'image
+            {
+                vortex.pixel(x, y) = image.pixel(new_point.x, new_point.y);
+            }
+        }
+    } 
+    vortex.save("output/exo18.png"); 
+}  
+
+//    glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
+//     {
+//         return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
+//     } 
