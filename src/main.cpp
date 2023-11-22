@@ -297,57 +297,90 @@ int main()
     // }
     // image.save("output/exo16.png");
 
-    // Exercice 17
-    sil::Image fractale{500/*width*/, 500/*height*/};
-    int compteur {};
-    for (float x{-2.5f}; x < 2.5f; x+=0.01f)
-    //     int rand {random_int(0, 1000)};// 1 chance sur 1000 de faire un glitch
-    {
-        for (float y{-2.5f}; y < 2.5f; y+=0.01f)
-        {
-            std::complex<float> c {x,y};
-            std::complex<float> z {0.0f, 0.0f};
-            // Calcul du nombre d'itérations nécésaires à ce que abs(z) dépasse 2
-            for (int i{0}; i<50; i++) {
-                z = (z * z) + c;
-                if (std::abs(z) >= 2.f) {
-                    compteur = i;
-                    break;
-                }
-            }
-            // Cas où abs(z) est toujours inférieur à 2
-            if (std::abs(z) < 2.f) {
-                compteur = 50;
-            } 
-            // Coloriage des pixel 
-            fractale.pixel(x*100+250,y*100+250).r = 0.0f + static_cast<float>(compteur)/50.0f;
-            fractale.pixel(x*100+250,y*100+250).g = 0.0f + static_cast<float>(compteur)/50.0f;
-            fractale.pixel(x*100+250,y*100+250).b = 0.0f + static_cast<float>(compteur)/50.0f;
-        }
-    }
-    fractale.save("output/exo17.png");
+//     // Exercice 17
+//     sil::Image fractale{500/*width*/, 500/*height*/};
+//     int compteur {};
+//     for (float x{-2.5f}; x < 2.5f; x+=0.01f)
+//     //     int rand {random_int(0, 1000)};// 1 chance sur 1000 de faire un glitch
+//     {
+//         for (float y{-2.5f}; y < 2.5f; y+=0.01f)
+//         {
+//             std::complex<float> c {x,y};
+//             std::complex<float> z {0.0f, 0.0f};
+//             // Calcul du nombre d'itérations nécésaires à ce que abs(z) dépasse 2
+//             for (int i{0}; i<50; i++) {
+//                 z = (z * z) + c;
+//                 if (std::abs(z) >= 2.f) {
+//                     compteur = i;
+//                     break;
+//                 }
+//             }
+//             // Cas où abs(z) est toujours inférieur à 2
+//             if (std::abs(z) < 2.f) {
+//                 compteur = 50;
+//             } 
+//             // Coloriage des pixel 
+//             fractale.pixel(x*100+250,y*100+250).r = 0.0f + static_cast<float>(compteur)/50.0f;
+//             fractale.pixel(x*100+250,y*100+250).g = 0.0f + static_cast<float>(compteur)/50.0f;
+//             fractale.pixel(x*100+250,y*100+250).b = 0.0f + static_cast<float>(compteur)/50.0f;
+//         }
+//     }
+//     fractale.save("output/exo17.png");
 
-   // Exercice 18:
-    sil::Image vortex{300/*width*/, 345/*height*/};
-    for (int x{ }; x < image.width(); x++)
+//    // Exercice 18
+//     sil::Image vortex{300/*width*/, 345/*height*/};
+//     for (int x{ }; x < image.width(); x++)
+//     {
+//         for (int y{0}; y < image.height(); y++)
+//         {
+//             glm::vec2 point{x, y};
+//             glm::vec2 center_of_rotation{image.width()/2, image.height()/2};
+
+//             glm::vec2 new_point{ rotated(point ,center_of_rotation ,pow((pow((x-image.width()/2),2)+pow((y-image.height()/2),2)),0.5)/10) };
+
+//             if(new_point.y<vortex.height() && new_point.x<vortex.width() && new_point.y>0 && new_point.x>0) // TODO vérifier que on est bien dans l'image
+//             {
+//                 vortex.pixel(x, y) = image.pixel(new_point.x, new_point.y);
+//             }
+//         }
+//     } 
+//     vortex.save("output/exo18.png"); 
+
+    // Exercice 20
+    sil::Image low_image{"images/photo_faible_contraste.jpg"};
+    float min {1.f}; // Plus petite luminosité
+    float max {0.f}; // Plus grande luminosité
+
+    for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
-        {
-            glm::vec2 point{x, y};
-            glm::vec2 center_of_rotation{image.width()/2, image.height()/2};
-
-            glm::vec2 new_point{ rotated(point ,center_of_rotation ,pow((pow((x-image.width()/2),2)+pow((y-image.height()/2),2)),0.5)/10) };
-
-            if(new_point.y<vortex.height() && new_point.x<vortex.width() && new_point.y>0 && new_point.x>0) // TODO vérifier que on est bien dans l'image
-            {
-                vortex.pixel(x, y) = image.pixel(new_point.x, new_point.y);
+        {   
+            // On cherche le pixel avec le moins de lumière
+            if ((low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f < min) {
+                min = (low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f;
+            }
+            // On cherche le pixel avec le plus de lumière
+            if ((low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f > max) {
+                max = (low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f;
             }
         }
     } 
-    vortex.save("output/exo18.png"); 
+
+    // Action sur les pixels
+    for (int x{0}; x < low_image.width(); x++)
+    {
+        for (int y{0}; y < low_image.height(); y++)
+        {   
+            low_image.pixel(x,y).r -= min;
+            low_image.pixel(x,y).g -= min;
+            low_image.pixel(x,y).b -= min;
+            
+            low_image.pixel(x,y).r *= 1.f / max;
+            low_image.pixel(x,y).g *= 1.f / max;
+            low_image.pixel(x,y).b *= 1.f / max;
+        }
+    } 
+    low_image.save("output/exo20.jpg"); 
+
 }  
 
-//    glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
-//     {
-//         return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
-//     } 
