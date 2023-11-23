@@ -297,7 +297,7 @@ int main()
     // }
     // image.save("output/exo16.png");
 
-    // Exercice 17
+//     // Exercice 17
 //     sil::Image fractale{500/*width*/, 500/*height*/};
 //     int compteur {};
 //     for (float x{-2.5f}; x < 2.5f; x+=0.01f)
@@ -327,7 +327,7 @@ int main()
 //     }
 //     fractale.save("output/exo17.png");
 
-//    // Exercice 18:
+//    // Exercice 18
 //     sil::Image vortex{300/*width*/, 345/*height*/};
 //     for (int x{ }; x < image.width(); x++)
 //     {
@@ -345,40 +345,58 @@ int main()
 //         }
 //     } 
 //     vortex.save("output/exo18.png"); 
-// }  
 
+    // Exercice 19
+    sil::Image photo{"images/photo.jpg"};
+    for (int x{0}; x < photo.width(); x++)
+    {
+        for (int y{0}; y < photo.height(); y++)
+        {   
+            float proba_blanc = (photo.pixel(x,y).r + photo.pixel(x,y).g + photo.pixel(x,y).b) / 3.f;
+            if (random_float(0.f, 1.f) < proba_blanc) {
+                photo.pixel(x, y) = glm::vec3{1};
+            } else {
+                photo.pixel(x, y) = glm::vec3{0};
+            }
+        }
+    } 
+    photo.save("output/exo19.jpg"); 
 
-    // Exercice 21 :
+    // Exercice 20
+    sil::Image low_image{"images/photo_faible_contraste.jpg"};
+    float min {1.f}; // Plus petite luminosité
+    float max {0.f}; // Plus grande luminosité
 
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
-        {
-            glm::vec3 sum {0.f};
-            int size {10};
-            for (int x_offset{-size}; x_offset < size; x_offset++)
-            {
-                for (int y_offset{-size}; y_offset < size; y_offset++)
-                {
-                    int real_x_offset{x_offset};
-                    int real_y_offset{y_offset};
-                    if (x+real_x_offset<0 || x+real_x_offset>=image.width())
-                    {
-                        real_x_offset = 0;
-                    }
-                    if (y+real_y_offset<0 || y+real_y_offset>=image.height())
-                    {
-                        real_y_offset = 0;
-                    }
-                    sum += image.pixel(x+real_x_offset,y+real_y_offset);
-                }
+        {   
+            // On cherche le pixel avec le moins de lumière
+            if ((low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f < min) {
+                min = (low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f;
             }
-            sum /= pow(2*size+1,2);
-            image.pixel(x,y)=sum;
+            // On cherche le pixel avec le plus de lumière
+            if ((low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f > max) {
+                max = (low_image.pixel(x,y).r + low_image.pixel(x,y).g + low_image.pixel(x,y).b)/3.f;
+            }
         }
-    }
-    image.save("output/exo21.png"); 
+    } 
 
+    // Action sur les pixels
+    for (int x{0}; x < low_image.width(); x++)
+    {
+        for (int y{0}; y < low_image.height(); y++)
+        {   
+            low_image.pixel(x,y).r -= min;
+            low_image.pixel(x,y).g -= min;
+            low_image.pixel(x,y).b -= min;
+            
+            low_image.pixel(x,y).r *= 1.f / max;
+            low_image.pixel(x,y).g *= 1.f / max;
+            low_image.pixel(x,y).b *= 1.f / max;
+        }
+    } 
+    low_image.save("output/exo20.jpg"); 
 
+}  
 
- }
