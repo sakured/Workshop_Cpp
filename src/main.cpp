@@ -398,5 +398,38 @@ int main()
     } 
     low_image.save("output/exo20.jpg"); 
 
+
+       // Exercice 21 :
+
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {
+            glm::vec3 sum {0.f};
+            int size {10};
+            for (int x_offset{-size}; x_offset < size; x_offset++)
+            {
+                for (int y_offset{-size}; y_offset < size; y_offset++)
+                {
+                    int real_x_offset{x_offset};
+                    int real_y_offset{y_offset};
+                    if (x+real_x_offset<0 || x+real_x_offset>=image.width())
+                    {
+                        real_x_offset = 0;
+                    }
+                    if (y+real_y_offset<0 || y+real_y_offset>=image.height())
+                    {
+                        real_y_offset = 0;
+                    }
+                    sum += image.pixel(x+real_x_offset,y+real_y_offset);
+                }
+            }
+            sum /= pow(2*size+1,2);
+            image.pixel(x,y)=sum;
+        }
+    }
+    image.save("output/exo21.png"); 
+
+
 }  
 
