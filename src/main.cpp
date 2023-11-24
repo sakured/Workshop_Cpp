@@ -155,14 +155,17 @@ void mirror(sil::Image image) {
     {
         for (int y{0}; y < image.height(); y++)
         {
+            // On stocke les couleurs des pixels à gauche de notre axe de symétrie
             stock_r = image.pixel(x, y).r;
             stock_g = image.pixel(x, y).g;
             stock_b = image.pixel(x, y).b;
 
+            // On attribue la couleurs des pixels à droite de note axe de symétrie aux pixels à gauche de notre axe de symétrie
             image.pixel(x, y).r = image.pixel(image.width()-x-1, y).r;
             image.pixel(x, y).g = image.pixel(image.width()-x-1, y).g;
             image.pixel(x, y).b = image.pixel(image.width()-x-1, y).b;
 
+            // On attribue l'ancienne couleur (maintenant stokée) des pixels à gauche de note axe de symétrie aux pixels à gauche de notre axe
             image.pixel(image.width()-x-1, y).r = stock_r;
             image.pixel(image.width()-x-1, y).g = stock_g;
             image.pixel(image.width()-x-1, y).b = stock_b;
@@ -214,9 +217,11 @@ void rgbSplit(sil::Image image) {
         for (int y{0}; y < image.height(); y++)
         {
             new_image.pixel(x, y).g = image.pixel(x, y).g;
+            // On gère le rouge
             if (x-30 >=0) {
                 new_image.pixel(x, y).r = image.pixel(x-30, y).r;
             }
+            // On gère le bleu
             if (x+30 < image.width()) {
                 new_image.pixel(x, y).b = image.pixel(x+30, y).b;
             }
@@ -395,6 +400,8 @@ void glitch(sil::Image image) {
         int rand_y1 {random_int(1, 10)}; // hauteur aléatoire
         int rand_x2 {random_int(rand_x1,300)}; // position x du pixel avec lequel on a interverti
         int rand_y2 {random_int(rand_y1,345)}; // position y du pixel avec lequel on a interverti
+
+        // On effectue le glitch
         if (rand == 1) {
             for (int x{0}; x < rand_x1; x++)
             {
@@ -473,6 +480,7 @@ void dithering(sil::Image image) {
     {
         for (int y{0}; y < image.height(); y++)
         {   
+            // On calcule la probabilité d'un pixel à être coloré en blanc en fonction de sa luminosité
             float white_proba = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b) / 3.f;
             if (random_float(0.f, 1.f) < white_proba) {
                 image.pixel(x, y) = glm::vec3{1};
@@ -528,12 +536,14 @@ void betterContrast(sil::Image image) {
  */
 sil::Image blur(sil::Image image, int level) {
     sil::Image new_image{image.width(), image.height()};
+    // On parcourt tous les pixels de notre image
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {
             glm::vec3 sum {0.f};
             int size {level};
+            // On parcourt tous les pixels de notre matrice de flou
             for (int x_offset{-size}; x_offset < size; x_offset++)
             {
                 for (int y_offset{-size}; y_offset < size; y_offset++)
@@ -551,6 +561,7 @@ sil::Image blur(sil::Image image, int level) {
                     sum += image.pixel(x+real_x_offset,y+real_y_offset);
                 }
             }
+            // On calcule et on applique la couleur trouvée au pixel de l'image parcouru
             sum /= pow(2*size+1,2);
             new_image.pixel(x,y)=sum;
         }
@@ -564,12 +575,14 @@ sil::Image blur(sil::Image image, int level) {
  */
 void applyKernel(std::vector<std::vector<float>> kernel, sil::Image & image, std::string name) {
     sil::Image new_image{image.width(), image.height()};
+    // On parcourt tous les pixels de notre image
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
         {
             glm::vec3 sum {0.f};
             int size {1};
+            // On parcourt tous les pixels de notre kernel
             for (int x_offset{-size}; x_offset <= size; x_offset++)
             {
                 for (int y_offset{-size}; y_offset <= size; y_offset++)
@@ -585,6 +598,7 @@ void applyKernel(std::vector<std::vector<float>> kernel, sil::Image & image, std
                     sum += image.pixel(x+real_x_offset,y+real_y_offset) * kernel[1+real_x_offset][1+real_y_offset];
                 }
             }
+            // On applique la couleur trouvée au pixel de l'image parcouru
             new_image.pixel(x,y) = sum;
         }
     }
@@ -599,6 +613,7 @@ void differenceOfGaussians(sil::Image photo) {
     sil::Image big_blur {blur(photo, 10)};
     photo = image;
     sil::Image small_blur {blur(photo, 4)};
+    // On soustrait une image un peu floutée à une image plus floutée
     for (int x{0}; x < image.width(); x++)
     {
         for (int y{0}; y < image.height(); y++)
