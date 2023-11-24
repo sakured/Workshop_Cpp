@@ -6,6 +6,8 @@
 #include <math.h>
 #include <cmath>
 #include <complex>
+#include <algorithm>
+#include <vector>
 #include <glm/gtx/matrix_transform_2d.hpp>
 #include "utils.hpp"
 
@@ -48,6 +50,7 @@ int main()
     applyKernel({{-2.f, -1.f, 0.f}, {-1.f, 1.f, 1.f}, {0.f, 1.f, 2.f}}, image, "emboss"); // emboss
     applyKernel({{0.f, -1.f, -0.f}, {-1.f, 5.f, -1.f}, {0.f, -1.f, 0.f}}, image, "sharpen"); // sharpen
     differenceOfGaussians(photo);
+    sortPixels(image);
 
     return 0;
  }
@@ -58,6 +61,14 @@ int main()
 glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle)
 {
     return glm::vec2{glm::rotate(glm::mat3{1.f}, angle) * glm::vec3{point - center_of_rotation, 0.f}} + center_of_rotation;
+} 
+
+ /**
+ * Renvoie la luminosité d'un pixel
+ */
+float brightness(glm::vec3 color)
+{
+    return (color.r + color.g + color.b) / 3.f;
 } 
 
  /**
@@ -598,4 +609,31 @@ void differenceOfGaussians(sil::Image photo) {
         }
     }
     image.save("output/differenceOfGaussians.png");
+}
+
+ /**
+ * Effectue un tri des pixels selon leur luminosité
+ */
+void sortPixels(sil::Image image) {
+    for (int x{0}; x < image.width(); x++)
+    {
+        // On récupère chaque ligne de pixels
+        std::vector<glm::vec3> line {};
+        int rand = random_int(0,image.height()-1);
+        for (int y{0}; y < rand; y++)
+        {
+            line.push_back(image.pixel(x,y));
+        }
+        // On effectue le tri
+        std::sort(line.begin(), line.end(), [](glm::vec3 const& color1, glm::vec3 const& color2)
+        {
+            return brightness(color1) < brightness(color2);
+        });
+        // On réafecte le tableau de pixels triés à l'image de base
+        for (int i{0}; i < line.size(); i++)
+        {
+            image.pixel(x,i) = line[i];
+        }
+    }
+    image.save("output/sortPixels.png");
 }
