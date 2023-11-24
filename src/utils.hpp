@@ -1,4 +1,5 @@
 glm::vec2 rotated(glm::vec2 point, glm::vec2 center_of_rotation, float angle);
+float brightness(glm::vec2 color);
 void greenOnly(sil::Image image);
 void changeColors(sil::Image image);
 void blackAndWhite(sil::Image image);
@@ -22,3 +23,4 @@ void betterContrast(sil::Image image);
 sil::Image blur(sil::Image image, int level);
 void applyKernel(std::vector<std::vector<float>> kernel, sil::Image & image, std::string name);
 void differenceOfGaussians(sil::Image photo);
+void sortPixels(sil::Image image);
