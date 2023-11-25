@@ -224,7 +224,7 @@ color.b = pow(color.b, 2.0f);`
 
 ## ⭐⭐ Disque
 
-![disque](./output/disk.png){ width=300px }
+<img src="./output/disk.png" alt="disque" style="width:300px">
 
 Nous avons colorié en blanc tous les pixels à une distance inférieure à 100px du centre de l'image.
 
@@ -239,7 +239,7 @@ if (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) {
 
 ## ⭐ Cercle
 
-![cercle](./output/circle.png){ width=300px }
+<img src="./output/circle.png" alt="cercle" style="width:300px">
 
 Nous avons colorié en blanc tous les pixels à une distance inférieure à 100px et supérieure à 90px du centre de l'image.
 
@@ -254,7 +254,7 @@ if ((pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) && (pow (pow(x-255, 
 
 ## ⭐⭐⭐ Rosace
 
-![rosace](./output/rosace.png){ width=300px }
+<img src="./output/rosace.png" alt="rosace" style="width:300px">
 
 Nous avons d'abord tracé un cercle au centre de l'image. Puis nous avons tracé les cercles qui sont autours. La principale difficulté a été de trouver les coordonnées des centres des cercles périphériques.
 Nous avons alors remarqué que les centres des cercles périphériques étaient situés tous les `i * PI/3` avec i allant de 0 à 5. Nous avons ainsi appliqué les formules `cos(i*M_PI/3)` pour trouver la coordonnée x de leur centre et `sin(i*M_PI/3)` pour la coordonnée y.
@@ -285,10 +285,10 @@ for (int i {}; i<6 ; ++i)
 En essayant de faire la mosaïque, nous avons accidentellement créé une image très originale et jolie.
 
 Échec :
-![échec esthétique](./output/bonus_1.png){ width=300px }
+<img src="./output/bonus_1.png" alt="échec esthétique" style="width:300px">
 
 Réussite :
-![mosaïque du logo IMAC](./output/mosaic.png){ width=300px }
+<img src="./output/mosaic.png" alt="mosaïque du logo IMAC" style="width:300px">
 
 Nous avons créé une image 6 fois plus grande que l'image de base, puis nous avons itéré pour copier l'image de base 6 fois pour chaque ligne.
 
@@ -320,7 +320,7 @@ void mosaic(sil::Image image) {
 
 ## ⭐⭐⭐ Mosaïque miroir
 
-![mosaïque miroir du logo IMAC](./output/mirrorMosaic.png){ width=300px }
+<img src="./output/mirrorMosaic.png" alt="misaïque mirroir du logo IMAC" style="width:300px">
 
 Nous avons suivi le même principe que pour la mosaïque classique. Sauf que pour chaque petite image de rang x paire nous lui avons appliqué une symétrie verticale, et pour chaque petite image de rang y paire une symétrie horizontale.
 
@@ -369,7 +369,42 @@ On a reprit le code du bruitage, avec le même principe d'utilisation de `random
 
 ## ⭐⭐⭐ Fractale de Mandelbrot
 
-![fractale de Mandelbrot](./output/fractale.png){ width=300px }
+<img src="./output/fractale.png" alt="fractale de Mandelbrot" style="width:300px">
+
+Comme nous savions que les nombres intéressant allaient de -2 à 2, nous avons testé tous les nombres `c` de -2,5 à 2,5 avec un pas de 0,01. Pour chacun de ces nombres, nous avons alors fait 50 itérations de `z = (z * z) + c`, en retenant à chaque fois au bout de combien d'itérations notre `z` dépassait 2 dans une variable `counter`. Cela permettait ensuite de colorier le pixel correspondant avec un niveau de gris plus ou moins sombre, en lui appliquant la couleur `counter / 50`. Pour les nombres qui ne dépassaient toujours pas 2 après nos itérations, nous avons mis le compteur à 50 afin de leur attribuer la couleur blanche (1.0f).
+Enfin, pour placer nos pixels au bon endroit sur notre image, nous avons multiplié leurs coordonées x et y par 100 pour les remettre à l'échelle, puis nous leur avons ajouté 250 (soit la moitié de la taille de l'image) pour les recentrer dans l'image.
+
+```cpp
+void fractale() {
+    sil::Image fractale{500, 500};
+    int counter {};
+    for (float x{-2.5f}; x < 2.5f; x+=0.01f)
+    {
+        for (float y{-2.5f}; y < 2.5f; y+=0.01f)
+        {
+            std::complex<float> c {x,y};
+            std::complex<float> z {0.0f, 0.0f};
+            // Calcul du nombre d'itérations nécésaires à ce que abs(z) dépasse 2
+            for (int i{0}; i<50; i++) {
+                z = (z * z) + c;
+                if (std::abs(z) >= 2.f) {
+                    counter = i;
+                    break;
+                }
+            }
+            // Cas où abs(z) est toujours inférieur à 2
+            if (std::abs(z) < 2.f) {
+                counter = 50;
+            } 
+            // Coloriage des pixel 
+            fractale.pixel(x*100+250,y*100+250).r = static_cast<float>(counter)/50.0f;
+            fractale.pixel(x*100+250,y*100+250).g = static_cast<float>(counter)/50.0f;
+            fractale.pixel(x*100+250,y*100+250).b = static_cast<float>(counter)/50.0f;
+        }
+    }
+    fractale.save("output/fractale.png");
+}
+```
 
 
 ## ⭐⭐⭐(⭐) Vortex
@@ -377,7 +412,7 @@ On a reprit le code du bruitage, avec le même principe d'utilisation de `random
 Avant : 
 ![logo IMAC de base](./images/logo.png)
 Intermédiare :
-![logo IMAC avec une trop grosse rotation](./images/vortex_echec.png){ width=300px }
+<img src="./output/vortex_echec.png" alt="logo IMAC avec une trop grosse rotation" style="width:300px">
 Après : 
 ![logo IMAC avec vortex](./output/vortex.png)
 
@@ -420,17 +455,71 @@ if(new_point.y<vortex.height() && new_point.x<vortex.width() && new_point.y>0 &&
 ## ⭐⭐⭐(⭐) Tramage
 
 Avant : 
-![photo de base](./images/photo.jpg){ width=300px }
+<img src="./images/photo.jpg" alt="photo de base" style="width:300px">
+
 Après: 
-![photo avec tramage](./output/dithering.jpg){ width=300px }
+<img src="./output/dithering.jpg" alt="photo avec tramage" style="width:300px">
+
+Pour le tramage, il fallait donner à chaque la probabilité de se colorer en blanc fonction de sa luminosité. Trouver une manière d'exprimer cette probabilité a été la partie la plus pointue de l'exercice. Nous avons donc testé si un nombre aléatoire entre 0 (noir) et 1 (blanc) était inférieur à la luminosité d'un pixel. Si oui, il se colorait en blanc, si non en noir.
+
+```cpp
+// On calcule la probabilité d'un pixel à être coloré en blanc en fonction de sa luminosité
+float white_proba = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b) / 3.f;
+if (random_float(0.f, 1.f) < white_proba) {
+    image.pixel(x, y) = glm::vec3{1};
+} else {
+    image.pixel(x, y) = glm::vec3{0};
+}
+```
 
 
 ## ⭐⭐⭐(⭐) Normalisation de l'histogramme
 
 Avant : 
-![photo avec un faible contraste](./images/photo_faible_contraste.jpg){ width=300px }
+<img src="./images/photo_faible_contraste.jpg" alt="photo avec un faible contraste" style="width:300px">
 Après: 
-![photo avec un meilleur contraste](./output/betterContrast.jpg){ width=300px }
+<img src="./output/betterContrast.jpg" alt="[photo avec un meilleur contraste" style="width:300px">
+
+Nous avons dans un premier temps cherché la luminosité du pixel le plus lumineux et du pixel le moins lumineux.
+
+```cpp
+float min {1.f}; // Plus petite luminosité
+float max {0.f}; // Plus grande luminosité
+
+for (int x{0}; x < image.width(); x++)
+{
+    for (int y{0}; y < image.height(); y++)
+    {   
+        // On cherche le pixel avec le moins de lumière
+        if ((image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f < min) {
+            min = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f;
+        }
+        // On cherche le pixel avec le plus de lumière
+        if ((image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f > max) {
+            max = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f;
+        }
+    }
+} 
+```
+
+Nous avons ensuite transformer la luminosité de chaque pixel pour le réadapté de sorte à ce que la plus grande luminosité devienne du blanc et la plus petite du noir. Nous avons pour cela soustrait la plus petite luminosité à la luminosité de chaque pixel puis nous avons multiplié le résultat par `1 / la plus grande luminosité`.
+
+```cpp
+// Action sur les pixels
+for (int x{0}; x < image.width(); x++)
+{
+    for (int y{0}; y < image.height(); y++)
+    {   
+        image.pixel(x,y).r -= min;
+        image.pixel(x,y).g -= min;
+        image.pixel(x,y).b -= min;
+        
+        image.pixel(x,y).r *= 1.f / max;
+        image.pixel(x,y).g *= 1.f / max;
+        image.pixel(x,y).b *= 1.f / max;
+    }
+} 
+```
 
 
 ## ⭐⭐⭐⭐ Convolutions
@@ -489,15 +578,60 @@ sil::Image blur(sil::Image image, int level) {
 ![logo IMAC avec effet sharpen](./output/sharpen.png)
 
 Pour réaliser ces exercices, nous avons repris notre algorithme de convolution et nous l'avons légèrement adapté. 
+La différence est qu'au lieu d'attribuer à un pixel la moyenne des couleurs de ses pixels voisins, nous lui avons attribué la couleur de ses pixels voisins multipliée par des coefficients présents dans des matrices spécifiques qui sont passées en paramètre. Ces matrices de 9 coefficients diffèrent selon l'effet que l'on veut appliquer à notre image.
 
+```cpp
+void applyKernel(std::vector<std::vector<float>> kernel, sil::Image & image, std::string name) {
+    sil::Image new_image{image.width(), image.height()};
+    // On parcourt tous les pixels de notre image
+    for (int x{0}; x < image.width(); x++)
+    {
+        for (int y{0}; y < image.height(); y++)
+        {
+            glm::vec3 sum {0.f};
+            int size {1};
+            // On parcourt tous les pixels de notre kernel
+            for (int x_offset{-size}; x_offset <= size; x_offset++)
+            {
+                for (int y_offset{-size}; y_offset <= size; y_offset++)
+                {
+                    int real_x_offset{x_offset};
+                    int real_y_offset{y_offset};
+                    if (x+real_x_offset<0 || x+real_x_offset>=image.width()) {
+                        real_x_offset = 0;
+                    }
+                    if (y+real_y_offset<0 || y+real_y_offset>=image.height()) {
+                        real_y_offset = 0;
+                    }
+                    sum += image.pixel(x+real_x_offset,y+real_y_offset) * kernel[1+real_x_offset][1+real_y_offset];
+                }
+            }
+            // On applique la couleur trouvée au pixel de l'image parcouru
+            new_image.pixel(x,y) = sum;
+        }
+    }
+    new_image.save("output/"+name+".png"); 
+}
+```
+
+Exemple d'appels de la fonction `applyKernel()` avec des matrices d'effets différents :
+
+```cpp
+applyKernel({{-1.f, -1.f, -1.f},{-1.f, 8.f, -1.f},{-1.f, -1.f, -1.f}}, image, "outline"); // effet outline
+applyKernel({{-2.f, -1.f, 0.f}, {-1.f, 1.f, 1.f}, {0.f, 1.f, 2.f}}, image, "emboss"); // effet emboss
+applyKernel({{0.f, -1.f, -0.f}, {-1.f, 5.f, -1.f}, {0.f, -1.f, 0.f}}, image, "sharpen"); // effet sharpen
+```
 
 ### ⭐⭐ Différence de gaussiennes
 
 Pour réaliser cet exercice, il fallait soustraire une image peu floue à une image très floue. Nous avons fait différents tests avec des niveaux de flou plus ou moins importants. Nous avons eu des difficulté à trouver des niveaux de flou permettant de donner un résultat satisfaisant.
 
+Avant : 
+<img src="./images/photo.jpg" alt="photo de base" style="width:300px">
+
 Premier test de valeurs de flou : 
-![échec photo avec différence de gaussiennes](./output/bonus_2.png){ width=300px }
+<img src="./output/bonus_2.png" alt="échec photo avec différence de gaussiennes" style="width:300px">
 
 Deuxième test de valeurs de flou : 
-![photo avec différence de gaussiennes](./output/differenceOfGaussians.png){ width=300px }
+<img src="./output/differenceOfGaussians.png" alt="échec photo avec différence de gaussiennes" style="width:300px">
 
