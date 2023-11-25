@@ -202,11 +202,11 @@ void rgbSplit(sil::Image image) {
 ## ⭐⭐ Luminosité
 
 Image de base : 
-![photo de base](./images/photo.jpg){ width=300px }
+<img src="./images/photo.jpg" alt="photo de base" style="width:300px">
 Plus lumineux : 
-![photo plus lumineuse](./output/moreLight.jpg){ width=300px }
+<img src="./output/moreLight.jpg" alt="photo plus lumineuse" style="width:300px">
 Moins lumineux : 
-![logo moins lumineuse](./output/lessLight.jpg){ width=300px }
+<img src="./output/lessLight.jpg" alt="photo moins lumineuse" style="width:300px">
 
 Nous avons vu que pour augmenter la luminosité, il faut mettre la luminosité de chaque pixel à la racine carrée (puissance 0,5) : 
 ```cpp
