@@ -25,6 +25,7 @@
   - [⭐⭐⭐⭐ Convolutions](#-convolutions)
     - [⭐ Netteté, Contours, etc.](#-netteté-contours-etc)
     - [⭐⭐ Différence de gaussiennes](#-différence-de-gaussiennes)
+  - [⭐⭐⭐⭐ Convolutions](#-convolutions-1)
 
 
 ## ⭐ Ne garder que le vert  
@@ -456,7 +457,6 @@ if(new_point.y<vortex.height() && new_point.x<vortex.width() && new_point.y>0 &&
 
 Avant : 
 <img src="./images/photo.jpg" alt="photo de base" style="width:300px">
-
 Après: 
 <img src="./output/dithering.jpg" alt="photo avec tramage" style="width:300px">
 
@@ -628,10 +628,45 @@ Pour réaliser cet exercice, il fallait soustraire une image peu floue à une im
 
 Avant : 
 <img src="./images/photo.jpg" alt="photo de base" style="width:300px">
-
 Premier test de valeurs de flou : 
 <img src="./output/bonus_2.png" alt="échec photo avec différence de gaussiennes" style="width:300px">
-
 Deuxième test de valeurs de flou : 
 <img src="./output/differenceOfGaussians.png" alt="échec photo avec différence de gaussiennes" style="width:300px">
 
+
+## ⭐⭐⭐⭐ Convolutions
+
+Avant : 
+![logo IMAC de base](./images/logo.png)
+En triant verticalement tous les pixels : 
+![logo IMAC avec tous les pixels triés](./output/sortAllPixels.png)
+En triant verticalement un nombre aléatoire de pixels par ligne : 
+![logo IMAC avec certains pixels triés](./output/sortPixels.png)
+
+Nous avons récupéré chaque ligne de pixels, puis nous avons trié un nombre aléatoire de pixels par ligne en fonction de leur luminosité, et nous avons réaffectée ces lignes de pixels triée à l'image originale.
+
+```cpp
+void sortPixels(sil::Image image) {
+    for (int x{0}; x < image.width(); x++)
+    {
+        // On récupère chaque ligne de pixels
+        std::vector<glm::vec3> line {};
+        int rand = random_int(0,image.height()-1);
+        for (int y{0}; y < rand; y++)
+        {
+            line.push_back(image.pixel(x,y));
+        }
+        // On effectue le tri
+        std::sort(line.begin(), line.end(), [](glm::vec3 const& color1, glm::vec3 const& color2)
+        {
+            return brightness(color1) < brightness(color2);
+        });
+        // On réafecte le tableau de pixels triés à l'image de base
+        for (int i{0}; i < line.size(); i++)
+        {
+            image.pixel(x,i) = line[i];
+        }
+    }
+    image.save("output/sortPixels.png");
+}
+```
