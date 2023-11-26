@@ -25,7 +25,7 @@
   - [⭐⭐⭐⭐ Convolutions](#-convolutions)
     - [⭐ Netteté, Contours, etc.](#-netteté-contours-etc)
     - [⭐⭐ Différence de gaussiennes](#-différence-de-gaussiennes)
-  - [⭐⭐⭐⭐ Convolutions](#-convolutions-1)
+  - [⭐⭐⭐⭐ Tri de pixels](#-tri-de-pixels)
 
 
 ## ⭐ Ne garder que le vert  
