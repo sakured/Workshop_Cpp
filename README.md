@@ -634,7 +634,7 @@ Deuxième test de valeurs de flou :
 <img src="./output/differenceOfGaussians.png" alt="échec photo avec différence de gaussiennes" style="width:300px">
 
 
-## ⭐⭐⭐⭐ Convolutions
+## ⭐⭐⭐⭐ Tri de pixels
 
 Avant : 
 ![logo IMAC de base](./images/logo.png)
