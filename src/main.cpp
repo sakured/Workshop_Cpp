@@ -17,7 +17,7 @@
 int main()
  {
     // Initialisation de pi
-    float pi {M_PI};
+    float pi {M_PI}; // Cette variable n'est utilisée nulle part.
 
     // Choix de l'image à modifier
     sil::Image image{"images/logo.png"};
@@ -89,10 +89,10 @@ void greenOnly(sil::Image image) {
 void changeColors(sil::Image image) {
     for (glm::vec3 & color : image.pixels())
     {
-        float stock {};
-        stock = color.r;
-        color.r = color.b;
-        color.b = stock;
+        float stock {};    // L'algo std::swap(color.r, color.b); 
+        stock = color.r;   // fait exactement la même chose que vos quatres lignes
+        color.r = color.b; // C'est bien que vous sachiez réimplémenter std::swap
+        color.b = stock;   // mais sachez aussi que ça existe déjà ;)
     }
     image.save("output/changeColors.png");
 }
@@ -103,7 +103,7 @@ void changeColors(sil::Image image) {
 void blackAndWhite(sil::Image image) {
     for (glm::vec3 & color : image.pixels())
     {
-        float gray = (color.g + color.b + color.r) / 3.f;
+        float gray = (color.g + color.b + color.r) / 3.f; // Puisque vous avez fait une fonction brightness() qui fait ça, vous auriez pu la réutiliser ici, ça évite d'avoir du code dupliqué.
         color.r = gray;
         color.g = gray;
         color.b = gray;
@@ -117,9 +117,9 @@ void blackAndWhite(sil::Image image) {
 void negative(sil::Image image) {
     for (glm::vec3 & color : image.pixels())
     {
-        color.r = 1 - color.r;
-        color.g = 1 - color.g;
-        color.b = 1 - color.b;
+        color.r = 1 - color.r; // On peut écrire ça en une seule ligne : color = 1.f - color
+        color.g = 1 - color.g; // glm définit tout plein d'opérations sur les couleurs, et ces opérations s'exécutent composante par composante
+        color.b = 1 - color.b; // Vous auriez pu faire ça à plein d'endroits dans votre cas, je ne vais pas faire la remarque à chaque fois mais je pense que vous saurez identifier ces endroits.
     }
     image.save("output/negative.png");
 }
@@ -137,7 +137,7 @@ void gradient() {
             gradient.pixel(y, x).r += light;
             gradient.pixel(y, x).g += light;
             gradient.pixel(y, x).b += light;
-            light += (1.f / 300.f);
+            light += (1.f / 300.f); // Ici, vous utilisez 300 parce que c'est la largeur de l'image. Si un jour vous changez la taille de l'image, vous risquez d'oublier de venir aussi changer le 300 ici. Pour éviter ça, vous auriez pu écrire `image.width()` au lieu de 300.
         }
         light = 0.f;
     }
@@ -148,9 +148,9 @@ void gradient() {
  * Fait une symétrie verticale d'une image
  */
 void mirror(sil::Image image) {
-    float stock_r {};
-    float stock_g {};
-    float stock_b {};
+    float stock_r {}; // C'est une mauvaise pratique de créer des variables trop tôt
+    float stock_g {}; // On préfère les créer au moment où on en a besoin
+    float stock_b {}; // a.k.a. à la ligne 159 dans ce cas.
     for (int x{0}; x < image.width()/2; x++)
     {
         for (int y{0}; y < image.height(); y++)
@@ -261,7 +261,7 @@ void disk() {
     {
         for (int y{0}; y < disk.width(); y++)
         {
-            if (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) {
+            if (pow (pow(x-255, 2.0f) + pow(y-255, 2.0f), 0.5f) < 100) { // Plutôt que de hardcoder 255, écrivez le en fonction des variables pertinentes, i.e. disk.width() et disk.height. D'ailleurs, pourquoi c'est 250 et pas 255 ? Probablement un bug, qui ne se serait pas produit si vous aviez écrit image.width() / 2 ;) Et même si ce n'est pas un bug, je n'arrive pas à comprendre en lisant votre code d'où vient ce 255, et donc voir la formule en fonction de image.width() m'aurait aidé à comprendre la logique derrière/.
                 disk.pixel(y, x).r = 1.0f;
                 disk.pixel(y, x).g = 1.0f;
                 disk.pixel(y, x).b = 1.0f;
@@ -312,6 +312,7 @@ void rosace() {
     {
         int x_centre = cos(i*M_PI/3)*100+255 ;
         int y_centre = sin(i*M_PI/3)*100+255 ;
+        // Plutôt que de recopier le code pour un cercle, vous auriez pu réutiliser la fonction `circle()` que vous avez fait juste au dessus (en la modifiant légèrement pour qu'elle prenne en paramètre le centre du cercle à dessiner, et pour qu'elle dessine sur une image passée en paramètre plutôt que de recréer sa propre image)
         for (int x{0}; x < rosace.height(); x++)
         {
             for (int y{0}; y < rosace.width(); y++)
@@ -331,7 +332,7 @@ void rosace() {
  * Crée une mosaïque
  */
 void mosaic(sil::Image image) {
-    sil::Image new_image {image.width()*5, image.height()*5};
+    sil::Image new_image {image.width()*5, image.height()*5}; // Créez une variable pour stocker le 5. Ca évite d'avoir un 5 qui se balade à plusieurs endroits dans votre code, et rend votre code plus facile à changer si vous voulez 6 répétitions au lieu de 5.
     for (int i=0; i<5; i++) 
     {
         for (int j=0; j<5; j++) 
@@ -340,7 +341,7 @@ void mosaic(sil::Image image) {
             {
                 for (int y{0}; y < image.height(); y++)
                 {
-                    new_image.pixel(i*300+x, j*345+y).r = image.pixel(x, y).r;
+                    new_image.pixel(i*300+x, j*345+y).r = image.pixel(x, y).r; // Utilisez image.width() et image.height() au lieu de 300 et 345
                     new_image.pixel(i*300+x, j*345+y).g = image.pixel(x, y).g;
                     new_image.pixel(i*300+x, j*345+y).b = image.pixel(x, y).b;
                 }
@@ -481,7 +482,7 @@ void dithering(sil::Image image) {
         for (int y{0}; y < image.height(); y++)
         {   
             // On calcule la probabilité d'un pixel à être coloré en blanc en fonction de sa luminosité
-            float white_proba = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b) / 3.f;
+            float white_proba = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b) / 3.f; // Vous auriez pu réutiliser la fonction brightness()
             if (random_float(0.f, 1.f) < white_proba) {
                 image.pixel(x, y) = glm::vec3{1};
             } else {
@@ -504,7 +505,7 @@ void betterContrast(sil::Image image) {
         for (int y{0}; y < image.height(); y++)
         {   
             // On cherche le pixel avec le moins de lumière
-            if ((image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f < min) {
+            if ((image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f < min) { // Fonction brightness
                 min = (image.pixel(x,y).r + image.pixel(x,y).g + image.pixel(x,y).b)/3.f;
             }
             // On cherche le pixel avec le plus de lumière
@@ -573,7 +574,7 @@ sil::Image blur(sil::Image image, int level) {
  /**
  * Permet d'appliquer un effet à une image à partir d'une matrice
  */
-void applyKernel(std::vector<std::vector<float>> kernel, sil::Image & image, std::string name) {
+void applyKernel(std::vector<std::vector<float>> const& kernel, sil::Image & image, std::string name) { // Vous pouvez prendre le kernel par const&, ça évite de le copier, et c'est une bonne chose car un tableau de tableau peut être relativement gros (9 float typiquement dans votre cas)
     sil::Image new_image{image.width(), image.height()};
     // On parcourt tous les pixels de notre image
     for (int x{0}; x < image.width(); x++)
@@ -610,9 +611,9 @@ void applyKernel(std::vector<std::vector<float>> kernel, sil::Image & image, std
  */
 void differenceOfGaussians(sil::Image photo) {
     sil::Image image {photo};
-    sil::Image big_blur {blur(photo, 10)};
+    sil::Image big_blur {blur(photo, 10)}; // Quand vous appelez blur, en + de flouter l'image ça la sauvegarde, ce qui n'est pas nécessaire dans ce cas. Vous auriez dû faire en sorte que la fonction blur ne fasse que flouter, puis faire un autre fonction blur_and_save() qui floute puis sauvegarde. Comme ça ici vous utilisez blur, et dans votre main vous utilisez blur_and_save. (Ou alors vous ne faites pas blur_and_save, et c'est directement dans le main que vous appelez blur puis sauvegardez le résultat)
     photo = image;
-    sil::Image small_blur {blur(photo, 4)};
+    sil::Image small_blur {blur(photo, 4)}; // Idem
     // On soustrait une image un peu floutée à une image plus floutée
     for (int x{0}; x < image.width(); x++)
     {
